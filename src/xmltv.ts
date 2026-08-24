@@ -1,4 +1,4 @@
-import type { GridApiResponse } from "./tvlistings.js";
+import type { Channel, Event, GridApiResponse } from "./tvlistings.js";
 import { Command } from "commander";
 
 // TF 10/2025 Add node.js module needed for helper function.
@@ -41,7 +41,7 @@ cli
   .option("--stationid", "Sort channels by station ID (legacy behavior)")
   .option("--sortname", "Sort channels alphabetically by call sign/name");
 cli.parse(process.argv);
-const options = cli.opts() as { [key: string]: any };
+const options = cli.opts() as { [key: string]: string | boolean | undefined };
 const useNextPvr = Boolean(options["nextpvr"]) || ((process.env["NEXTPVR"] || "").toLowerCase() === "true");
 const useStationId = Boolean(options["stationid"]) || ((process.env["STATIONID"] || "").toLowerCase() === "true");
 const useSortName = Boolean(options["sortname"]) || ((process.env["SORTNAME"] || "").toLowerCase() === "true");
@@ -53,7 +53,7 @@ function parseChannelNo(no: string | null | undefined): number[] {
 }
 
 // Shared comparator honoring --sortname, --stationid, else numeric channelNo
-function channelComparator(a: any, b: any): number {
+function channelComparator(a: Channel, b: Channel): number {
   if (useSortName) {
     const aName = (a.callSign || a.affiliateName || "").toString();
     const bName = (b.callSign || b.affiliateName || "").toString();
@@ -97,10 +97,10 @@ function toDdProgid(rawId: string | undefined | null): string | null {
 // TF 10/2025 Impement an internal deepStrictEqual function to compare to objects.
 // Helper to compare two objects.
 
-function isIdentical(obj1: any, obj2: any): boolean {
+function isIdentical(obj1: Event, obj2: Event): boolean {
   try {
     assert.deepStrictEqual(obj1,obj2);
-  } catch(error) {
+  } catch {
     return false
   }
 return true
@@ -178,10 +178,10 @@ export function buildProgramsXml(data: GridApiResponse): string {
 
     //for (const event of sortedEvents) {
     for (let i=0; i<sortedEvents.length; i++) {
-      let event = sortedEvents[i]!;
+      const event = sortedEvents[i]!;
 
       if (i>0) {
-        let pevent = sortedEvents[(i-1)]!;
+        const pevent = sortedEvents[(i-1)]!;
         if (isIdentical(event, pevent)) {
           continue
         }
@@ -246,8 +246,8 @@ export function buildProgramsXml(data: GridApiResponse): string {
         xml += `    <icon src="${escapeXml(src)}" />\n`;
       }
 
-      if (event.program.seriesId && (event.program as any).tmsId) {
-        const encodedUrl = `https://tvlistings.gracenote.com//overview.html?programSeriesId=${event.program.seriesId}&amp;tmsId=${(event.program as any).tmsId}`;
+      if (event.program.seriesId && event.program.tmsId) {
+        const encodedUrl = `https://tvlistings.gracenote.com//overview.html?programSeriesId=${event.program.seriesId}&amp;tmsId=${event.program.tmsId}`;
         xml += `    <url>${encodedUrl}</url>\n`;
       }
 
