@@ -30,9 +30,9 @@ export function processLineupId(): string {
     throw new Error(`Invalid country code: ${country}`);
   }
 
-  if (lineupId.includes("OTA")) {
-    return `${country}-lineupId-DEFAULT`;
-  }
+  //if (lineupId.includes("OTA")) {
+  //  return `${country}-lineupId-DEFAULT`;
+  //}
 
   return lineupId;
 }
