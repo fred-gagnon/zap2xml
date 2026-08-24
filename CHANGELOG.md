@@ -45,6 +45,13 @@ These changes are currently on the [jesmannstl/zap2xml](https://github.com/jesma
 
 
 
+## [3.0.1](https://github.com/fred-gagnon/zap2xml/compare/v3.0.0...v3.0.1) (2026-08-24)
+
+
+### Bug Fixes
+
+* Enable package write ([24074db](https://github.com/fred-gagnon/zap2xml/commit/24074db8f6c787066e25a012a8c3b4f31beffd28))
+
 ## [3.0.0](https://github.com/fred-gagnon/zap2xml/compare/v2.2.1...v3.0.0) (2026-08-24)
 
 
